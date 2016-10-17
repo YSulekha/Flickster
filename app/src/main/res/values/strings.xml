@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Flickster</string>
+    <string name="overview">For Justin Timberlake its the final two dates of his
+        Experience World Tour at the MGM Grand Garden Arena in Las Vegas.
+        Surrounded by the 25 band members of The Tennessee Kids and featuring show-stopping performances
+        from one of the highest-grossing tours of the decade, the film is a culmination of the singer’s 134 shows
+        and 2 years on the road.</string>
+    <string name="menu_refresh">Refresh</string>
+</resources>
