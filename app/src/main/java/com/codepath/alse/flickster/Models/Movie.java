@@ -5,13 +5,14 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import java.util.ArrayList;
 
 /**
  * Created by aharyadi on 10/14/16.
  */
-
+@Parcel
 public class Movie {
 
     String movieName;
@@ -20,12 +21,16 @@ public class Movie {
     String backdropPath;
     double rating;
     String releaseDate;
+    String trailer;
 
+    public Movie(){
+
+    }
     public String getTrailer() {
         return trailer;
     }
 
-    String trailer;
+
 
     public void setTrailer(String trailer) {
         this.trailer = trailer;

@@ -1,5 +1,6 @@
 package com.codepath.alse.flickster;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,18 +13,22 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.codepath.alse.flickster.Adapters.MovieArrayAdapter;
 import com.codepath.alse.flickster.Models.Movie;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
-
-import cz.msebera.android.httpclient.Header;
 
 public class MovieActivity extends AppCompatActivity {
 
@@ -31,6 +36,9 @@ public class MovieActivity extends AppCompatActivity {
     ListView moviesList;
     MovieArrayAdapter movieAdapter;
     SwipeRefreshLayout swipeRefreshLayout;
+    private RequestQueue mRequestQueue;
+    boolean isDetail = false;
+    Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,7 @@ public class MovieActivity extends AppCompatActivity {
         moviesList = (ListView)findViewById(R.id.movies_list);
         movieAdapter = new MovieArrayAdapter(this,movies);
         moviesList.setAdapter(movieAdapter);
+        mRequestQueue = Volley.newRequestQueue(this);
         asyncMoviesApi();
         swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.movies_refresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -49,20 +58,24 @@ public class MovieActivity extends AppCompatActivity {
                 asyncMoviesApi();
             }
         });
+        mContext = this;
         moviesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Movie m = (Movie) adapterView.getItemAtPosition(position);
                 if(m.getRating() > 5.0) {
-                    asyncVideosApi(m);
+                    Intent intent = new Intent(MovieActivity.this, YoutubeActivity.class);
+                    asyncVideosApi(m,mRequestQueue,intent,mContext);
                 }
                 else{
-                      Intent intent = new Intent(MovieActivity.this,MovieDetailActivity.class);
-                intent.putExtra(MovieDetailActivity.MOVIE_NAME,m.getMovieName());
+                  Intent intent = new Intent(MovieActivity.this,MovieDetailActivity.class);
+               /* intent.putExtra(MovieDetailActivity.MOVIE_NAME,m.getMovieName());
                 intent.putExtra(MovieDetailActivity.DATE,m.getRealeaseDate());
                 intent.putExtra(MovieDetailActivity.RATING,(m.getRating()*5)/10);
                 intent.putExtra(MovieDetailActivity.OVERVIEW,m.getOverview());
                 intent.putExtra(MovieDetailActivity.POSTER_PATH,m.getPosterPath());
+                    intent.putExtra(MovieDetailActivity.TRAILER,m.getTrailer());*/
+                    intent.putExtra(MovieDetailActivity.MOVIE, Parcels.wrap(m));
                 startActivity(intent);
                 }
             }
@@ -89,7 +102,7 @@ public class MovieActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void asyncMoviesApi(){
+ /*   public void asyncMoviesApi(){
         String url = "https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url,new JsonHttpResponseHandler(){
@@ -116,8 +129,35 @@ public class MovieActivity extends AppCompatActivity {
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
         });
-    }
-    public void asyncVideosApi(final Movie movie){
+    }*/
+ public void asyncMoviesApi(){
+     String url = "https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
+     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+             new Response.Listener<JSONObject>() {
+         @Override
+         public void onResponse(JSONObject response) {
+             JSONArray resultArray = null;
+             try {
+                 resultArray = response.getJSONArray("results");
+                 movies.clear();
+                 movies.addAll(Movie.getMovieArray(resultArray));
+                 movieAdapter.notifyDataSetChanged();
+                 Log.v("InsideOnSuccess","success");
+                 swipeRefreshLayout.setRefreshing(false);
+             } catch (JSONException e) {
+                 e.printStackTrace();
+             }
+         }
+     },new Response.ErrorListener(){
+
+         @Override
+         public void onErrorResponse(VolleyError error) {
+             VolleyLog.e("Error in Network call",error.getMessage());
+         }
+     });
+     mRequestQueue.add(jsonObjectRequest);
+ }
+    /*public  void asyncVideosApi(final Movie movie){
         String url = "https://api.themoviedb.org/3/movie";
         Uri u = Uri.parse(url).buildUpon().appendPath(movie.getMovieid()).appendPath("videos").
                 appendQueryParameter("api_key","a07e22bc18f5cb106bfe4cc1f83ad8ed").build();
@@ -153,5 +193,42 @@ public class MovieActivity extends AppCompatActivity {
             }
         });
 
+    }*/
+    public void asyncVideosApi(final Movie movie, RequestQueue requestQueue, final Intent intent, final Context context) {
+        String url = "https://api.themoviedb.org/3/movie";
+        Uri u = Uri.parse(url).buildUpon().appendPath(movie.getMovieid()).appendPath("videos").
+                appendQueryParameter("api_key", "a07e22bc18f5cb106bfe4cc1f83ad8ed").build();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, u.toString(), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        JSONArray resultArray = null;
+                        try {
+                            resultArray = response.getJSONArray("results");
+                            for(int i=0;i<resultArray.length();i++){
+                                JSONObject onj = (JSONObject) resultArray.get(i);
+                                String type = onj.getString("type");
+                                if(type.equals("Trailer")){
+                                    Log.v("MovieActivity","dfasdf");
+                                    movie.setTrailer(onj.getString("key"));
+                                        intent.putExtra(YoutubeActivity.VIDEO_KEY, movie.getTrailer());
+                                        context.startActivity(intent);
+
+                                    break;
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.e("Error in Network call", error.getMessage());
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
     }
+
 }

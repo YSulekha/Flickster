@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'com.neenbedankt.android-apt'
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.3"
@@ -29,4 +29,9 @@ dependencies {
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile files('libs/YouTubeAndroidPlayerApi.jar')
+    compile 'jp.wasabeef:picasso-transformations:2.1.0'
+    compile 'com.android.volley:volley:1.0.0'
+    compile 'com.android.support:cardview-v7:24.0.0-alpha2'
+    compile 'org.parceler:parceler-api:1.1.1'
+    apt 'org.parceler:parceler:1.1.1'
 }
