@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -30,27 +31,33 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MovieActivity extends AppCompatActivity {
 
     ArrayList<Movie> movies;
-    ListView moviesList;
-    MovieArrayAdapter movieAdapter;
-    SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.movies_list) ListView moviesList;
+     MovieArrayAdapter movieAdapter;
+    @BindView(R.id.movies_refresh) SwipeRefreshLayout swipeRefreshLayout;
     private RequestQueue mRequestQueue;
     boolean isDetail = false;
     Context mContext;
+    @BindString(R.string.no_videos) String toastString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
+        ButterKnife.bind(this);
         movies = new ArrayList<>();
-        moviesList = (ListView)findViewById(R.id.movies_list);
+    //    moviesList = (ListView)findViewById(R.id.movies_list);
         movieAdapter = new MovieArrayAdapter(this,movies);
         moviesList.setAdapter(movieAdapter);
         mRequestQueue = Volley.newRequestQueue(this);
         asyncMoviesApi();
-        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.movies_refresh);
+    //    swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.movies_refresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -62,7 +69,9 @@ public class MovieActivity extends AppCompatActivity {
         moviesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+
                 Movie m = (Movie) adapterView.getItemAtPosition(position);
+                Log.v("Inside ClickListener",m.getMovieName()+m.getRating());
                 if(m.getRating() > 5.0) {
                     Intent intent = new Intent(MovieActivity.this, YoutubeActivity.class);
                     asyncVideosApi(m,mRequestQueue,intent,mContext);
@@ -131,8 +140,10 @@ public class MovieActivity extends AppCompatActivity {
         });
     }*/
  public void asyncMoviesApi(){
-     String url = "https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
-     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+     String apiKey = BuildConfig.MOVIE_DB_API_KEY;
+     String url = "https://api.themoviedb.org/3/movie/now_playing";
+     Uri uri = Uri.parse(url).buildUpon().appendQueryParameter("api_key",apiKey).build();
+     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, uri.toString(), null,
              new Response.Listener<JSONObject>() {
          @Override
          public void onResponse(JSONObject response) {
@@ -196,6 +207,7 @@ public class MovieActivity extends AppCompatActivity {
     }*/
     public void asyncVideosApi(final Movie movie, RequestQueue requestQueue, final Intent intent, final Context context) {
         String url = "https://api.themoviedb.org/3/movie";
+        Log.v("Inside AsyncVides", movie.getMovieid());
         Uri u = Uri.parse(url).buildUpon().appendPath(movie.getMovieid()).appendPath("videos").
                 appendQueryParameter("api_key", "a07e22bc18f5cb106bfe4cc1f83ad8ed").build();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, u.toString(), null,
@@ -205,6 +217,10 @@ public class MovieActivity extends AppCompatActivity {
                         JSONArray resultArray = null;
                         try {
                             resultArray = response.getJSONArray("results");
+                            if(resultArray.length() == 0){
+                                Toast toast = Toast.makeText(context,toastString,Toast.LENGTH_LONG);
+                                toast.show();
+                            }
                             for(int i=0;i<resultArray.length();i++){
                                 JSONObject onj = (JSONObject) resultArray.get(i);
                                 String type = onj.getString("type");

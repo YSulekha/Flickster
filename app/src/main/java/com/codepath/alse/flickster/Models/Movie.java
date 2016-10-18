@@ -21,11 +21,20 @@ public class Movie {
     String backdropPath;
     double rating;
     String releaseDate;
-    String trailer;
+     String trailer;
+    double popularity;
 
     public Movie(){
 
     }
+
+    public Double getPopularity() {
+        return popularity;
+    }
+
+
+
+
     public String getTrailer() {
         return trailer;
     }
@@ -94,6 +103,7 @@ public class Movie {
         this.rating = jsonObject.getDouble("vote_average");
         this.releaseDate = jsonObject.getString("release_date");
         this.movieid = jsonObject.getString("id");
+        this.popularity=jsonObject.getDouble("popularity");
 
         Log.v("Name+backdrop",this.movieName+this.backdropPath);
     }

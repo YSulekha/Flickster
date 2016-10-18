@@ -17,12 +17,12 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
-/**
- * Created by aharyadi on 10/15/16.
- */
 
+//Adapter for the listView
 public class MovieArrayAdapter extends ArrayAdapter<Movie> {
 
     public static final int ITEM_BACKDROP = 0;
@@ -30,6 +30,7 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
     Context mContext = getContext();
 
     public MovieArrayAdapter(Context context, List<Movie> movies) {
+
         super(context, 0,movies);
     }
 
@@ -54,16 +55,16 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
     public View getView(int position, View convertView, ViewGroup parent) {
         Movie movie = getItem(position);
         int type = getItemViewType(position);
-        Context context = getContext();
-        int orientation = context.getResources().getConfiguration().orientation;
-        LayoutInflater inflater = LayoutInflater.from(context);
+        int orientation = mContext.getResources().getConfiguration().orientation;
+        LayoutInflater inflater = LayoutInflater.from(mContext);
         switch(type){
             case ITEM_BACKDROP:
                     ViewHolderBackdrop viewHolderBackdrop;
                     if(convertView == null){
-                        viewHolderBackdrop = new ViewHolderBackdrop();
+
                         convertView = inflater.inflate(R.layout.movie_listitem_rating,parent,false);
-                        viewHolderBackdrop.backdrop = (ImageView)convertView.findViewById(R.id.list_rating_backdrop);
+                        viewHolderBackdrop = new ViewHolderBackdrop(convertView);
+                     //   viewHolderBackdrop.backdrop = (ImageView)convertView.findViewById(list_rating_backdrop);
                         convertView.setTag(viewHolderBackdrop);
                     }
                     else{
@@ -76,7 +77,7 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
 
                 return convertView;
             case ITEM_DETAILS:
-                ViewHolderDetail viewHolder = new ViewHolderDetail();
+                ViewHolderDetail viewHolder;
                 if(convertView == null){
                     if(position % 2 ==0) {
                         convertView = inflater.inflate(R.layout.movie_listitem1, parent, false);
@@ -84,9 +85,10 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
                     else{
                         convertView = inflater.inflate(R.layout.movie_listitem2, parent, false);
                     }
-                    viewHolder.poster = (ImageView)convertView.findViewById(R.id.list_profile);
-                    viewHolder.title = (TextView)convertView.findViewById(R.id.list_title);
-                    viewHolder.overview = (TextView)convertView.findViewById(R.id.list_overview);
+                    viewHolder = new ViewHolderDetail(convertView);
+                 /*   viewHolder.poster = (ImageView)convertView.findViewById(R.id.list_profile);
+                    viewHolder.title = (TextView)convertView.findViewById(list_title);
+                    viewHolder.overview = (TextView)convertView.findViewById(list_overview);*/
                     convertView.setTag(viewHolder);
 
                 }
@@ -114,11 +116,19 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
         }
 
     public static class ViewHolderDetail{
-        ImageView poster;
-        TextView title;
-        TextView overview;
+        @BindView(R.id.list_profile) ImageView poster;
+        @BindView(R.id.list_title) TextView title;
+        @BindView(R.id.list_overview) TextView overview;
+
+        public ViewHolderDetail(View v){
+            ButterKnife.bind(this, v);
+        }
     }
     public static class ViewHolderBackdrop{
-        ImageView backdrop;
+        @BindView(R.id.list_rating_backdrop) ImageView backdrop;
+
+        public ViewHolderBackdrop(View v){
+            ButterKnife.bind(this, v);
+        }
     }
 }

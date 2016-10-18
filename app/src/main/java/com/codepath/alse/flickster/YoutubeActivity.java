@@ -14,14 +14,16 @@ public class YoutubeActivity extends YouTubeBaseActivity {
     YouTubePlayerView youTubePlayerView;
     YouTubePlayer mYouTubePlayer;
 
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_youtube);
         final Intent intent = getIntent();
+        String apiKey = BuildConfig.YOUTUBE_API_KEY;
 
         youTubePlayerView = (YouTubePlayerView) findViewById(R.id.player);
-        youTubePlayerView.initialize("AIzaSyASRLGx8F9i3OGxqfSWjbZyxsC3-ht4U1o", new YouTubePlayer.OnInitializedListener() {
+        youTubePlayerView.initialize(apiKey, new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
                 if (!wasRestored) {

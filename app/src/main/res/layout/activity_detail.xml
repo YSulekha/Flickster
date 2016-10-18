@@ -11,12 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:id="@+id/frame"
-        android:onClick="onClickPic">
+        android:onClick="onClickPic"
+        android:layout_alignParentTop="true"
+        >
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:id="@+id/detail_ImageView"
-            android:layout_gravity="center"/>
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            />
         <ImageView
             android:layout_width="60dp"
             android:layout_height="60dp"
@@ -24,34 +28,19 @@
             android:layout_gravity="center"/>
     </FrameLayout>
 
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/frame"
-        android:text="dsfsdfcc"
-        android:textSize="16sp"
-        android:typeface="normal"
-        android:id="@+id/detail_release_date"
-        android:fontFamily="sans-serif"
-        android:paddingTop="10dp"
-        android:gravity="center"
-        android:textColor="@color/colorPrimaryDark"
-        android:freezesText="true"
-
-        />
     <RatingBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/detail_ratingBar"
         android:layout_centerInParent="true"
         android:isIndicator="true"
+        android:paddingTop="10dp"
         android:stepSize=".1"
         android:numStars="5"
         android:rating="3.65"
         android:mirrorForRtl="false"
         android:theme="@style/RatingBar"
-        android:layout_below="@+id/detail_release_date"
+        android:layout_below="@+id/frame"
         android:outlineProvider="background" />
 
     <TextView
@@ -63,12 +52,36 @@
         android:textIsSelectable="true"
         android:outlineProvider="background"
         android:fontFamily="sans-serif"
-        android:padding="16dp"
+        android:padding="10dp"
         android:textColor="@android:color/black"
         style="?android:attr/textAppearanceMedium"
-
         />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Popularity :"
+        android:padding="10dp"
+        android:id="@+id/linear"
+        android:fontFamily="sans-serif"
+        android:layout_below="@id/detail_overview"
+        android:textColor="@android:color/black"
+        style="?android:attr/textAppearanceMedium"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:text="1.12"
+        android:paddingTop="10dp"
+        android:paddingLeft="4dp"
+        android:fontFamily="sans-serif"
+        android:layout_toRightOf="@id/linear"
+        android:layout_below="@id/detail_overview"
+        android:id="@+id/detail_popular"
+        android:textColor="@android:color/black"
+        style="?android:attr/textAppearanceMedium"/>
 
 </RelativeLayout>
 </ScrollView>
