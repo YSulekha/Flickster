@@ -8,6 +8,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 
+//Youtube Activity to play youtube videos in Youtube player
 public class YoutubeActivity extends YouTubeBaseActivity {
 
     public static final String VIDEO_KEY = "video_key";

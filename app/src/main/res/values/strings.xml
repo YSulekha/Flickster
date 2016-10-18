@@ -7,4 +7,5 @@
         and 2 years on the road.</string>
     <string name="menu_refresh">Refresh</string>
     <string name = "no_videos">Sorry, No video for this movie</string>
+    <string name="popularity">Popularity :</string>
 </resources>
