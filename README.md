@@ -30,7 +30,7 @@ The following **bonus** features are implemented:
     *  Overlay a play icon for videos that can be played.
     * More popular movies should start a separate activity that plays the video immediately.
     * Less popular videos rely on the detail page should show ratings and a YouTube preview.
-* pply the popular [Butterknife annotation library](http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife) to reduce boilerplate code.
+* Apply the popular [Butterknife annotation library](http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife) to reduce boilerplate code.
 * Apply rounded corners for the poster or background images using [Picasso transformations](https://guides.codepath.com/android/Displaying-Images-with-the-Picasso-Library#other-transformations)
 *  Replaced android-async-http network client with the popular [OkHttp](http://guides.codepath.com/android/Using-OkHttp) or [Volley](http://guides.codepath.com/android/Networking-with-the-Volley-Library) networking libraries.
 
@@ -47,6 +47,9 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 - [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
 - [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android
+- [Parceler](https://github.com/johncarl81/parceler) - Code generation library that generates the Android Parcelable boilerplate source code
+- [Butterknife](https://github.com/JakeWharton/butterknife) - Popular View "injection" library for Android
+- [Volley](https://github.com/mcxiaoke/android-volley)- library that makes networking for Android apps easier
 
 ## License
 
