@@ -22,6 +22,7 @@
         android:layout_alignTop="@id/list_title"
         android:src = "@mipmap/ic_launcher"
         android:minWidth="200dp"
+        android:minHeight="200dp"
         android:layout_alignParentRight="true" />
     <TextView
         android:text="TextView"
